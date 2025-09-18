@@ -1,0 +1,12 @@
+    <!-- Flash Message Dismissing -->
+{% $flashMessage = $this->flash(); %}
+{% if ($flashMessage) : %}
+    {% $alertClasses = $this->constConfig('ARRAY_FLASH_MESSAGE'); %}
+    {% $classes = $alertClasses[$flashMessage['type']] ?? ['bg' => 'alert-primary']; %}
+    
+    <div class="alert alert-dismissible fade show {{ $classes['bg'] }}" role="alert">
+        <strong class="font-bold me-2">{{ strtoupper(str_replace('message', '', $flashMessage['type'])) }}:</strong>
+        <span>{{ $flashMessage['message'] }}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endif; %}

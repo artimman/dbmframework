@@ -1,0 +1,13 @@
+Hello GitHub Support,
+
+I have lost access to my GitHub account (username: designbymalina) due to removal of the 2FA device. I no longer have the recovery codes or any 2FA device, and I cannot log in via browser.
+
+However, I still have access to this repository via Git from VS Code, and I can commit and push as proof of ownership.
+
+Please help me recover access to my account.
+
+GitHub username: designbymalina  
+Associated email: artimman@poczta.onet.pl  
+Repo: https://github.com/designbymalina/dbmframework
+
+Thank you.

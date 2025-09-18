@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Design by Malina">
+    <meta name="robots" content="{{ $this->meta('meta.robots', $data) }}">
+    {% if ($this->meta('meta.keywords', $data) != '') : %}<meta name="keywords" content="{{ $this->meta('meta.keywords', $data) }}">{% echo PHP_EOL; %}{% endif; %}
+    {% if ($this->meta('meta.description', $data) != '') : %}<meta name="description" content="{{ $this->meta('meta.description', $data) }}">{% echo PHP_EOL; %}{% endif; %}
+    <title>{{ $this->meta('meta.title', $data) }}</title>
+    <link href="{{ $this->asset('favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+    <link href="{{ $this->asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ $this->asset('bootstrap-icons/bootstrap-icons.min.css') }}" rel="stylesheet">
+    <link href="{{ $this->asset('assets/css/start.css') }}" rel="stylesheet">
+    <!-- Yield Head -->{% yield head %}
+</head>
+<body class="d-flex flex-column h-100">
+    {% include '_include/start_header.phtml' %}
+    {% yield content %}
+    {% include '_include/start_footer.phtml' %}
+    <!-- Yield Body -->{% yield body %}
+</body>
+</html>

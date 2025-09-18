@@ -1,0 +1,21 @@
+# *NOTE! This file is temporary and should be deleted after the application installation is complete in the domain.
+# The file is used only to install the application in a directory or on a local server (localhost).
+
+<Files .htaccess>
+  Order allow,deny
+  Deny from all
+</Files>
+
+<IfModule mod_rewrite.c>
+  # Enable mod_rewrite module
+  RewriteEngine On
+
+  # Base path for rules; *NOTE! Adjust the path according to your setup. Example for localhost in the dbmframework folder:
+  # RewriteBase /dbmframework/
+
+  # Redirecting requests to the public directory
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^$ public/ [L]
+  RewriteRule (.*) public/$1 [L]
+</IfModule>

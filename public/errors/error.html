@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Design by Malina, www.dbm.org.pl">
+    <title>DbM Framework - ERROR</title>
+	<link href="../favicon.ico" rel="icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="d-flex align-items-center justify-content-center vh-100">
+        <div class="text-center">
+			<script>
+				const queryString = window.location.search;
+				const urlParams = new URLSearchParams(queryString);
+			
+				if (urlParams.has('code')) {
+					const code = urlParams.get('code');
+					const codes = {
+						401: "Unauthorized!",
+						500: "Internal Server Error!",
+						1045: "Access denied for User. Check your database connection!",
+						1049: "Unknown database. Check your database connection!",
+						2002 : "Can't connect to local MySQL server!",
+					};
+
+					if (code in codes) {
+						document.write('<h1>' + code + ' | ' + codes[code] + '</h1>');
+					} else {
+						document.write('<h1>' + code + ' | ERROR</h1>');
+						document.write('<p>Learn more about the <a href="https://www.google.com/search?q=error+' + code + '" class="link-danger text-decoration-none" target="_blank">ERROR ' + code + '</a></p>');
+					}
+				} else {
+					window.location.replace("../");
+				}
+			</script>
+        </div>
+    </div>
+</body>
+</html>

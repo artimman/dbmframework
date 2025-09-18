@@ -1,0 +1,25 @@
+        <nav class="topbar navbar navbar-dark bg-dark">
+            <div class="container d-flex align-items-center justify-content-between w-100">
+                <a class="navbar-brand d-flex align-items-center" href="{{ $this->path('start') }}">
+                    <img src="{{ $this->asset('images/logo.png') }}" width="38" height="40" alt="DbM Framework">
+                </a>
+                <ul class="navbar-nav d-flex flex-row gap-3 flex-grow-1 justify-content-start">
+                    <li class="nav-item">
+                        <a class="nav-link text-truncate dbm-nav-max-width{{ $this->isActive('index', 'active', '') }}" href="{{ $this->path() }}">Home (Build a New Project)</a>
+                    </li>
+                    {% if ($this->isPath('install')) : %}
+
+                    <li class="nav-item">
+                        <a href="{{ $this->path('install') }}" class="nav-link text-truncate dbm-nav-max-width{{ $this->isActive('install', 'active', '') }}">Install (DbM CMS)</a>
+                    </li>
+                    {% endif; %}
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link disabled text-truncate dbm-nav-max-width" tabindex="-1" aria-disabled="true">Extensions</a>
+                    </li>
+                </ul>
+                <div class="ms-3">
+                    <a href="https://github.com/designbymalina/dbmframework" target="_blank" class="btn btn-outline-warning">Download</a>
+                </div>
+            </div>
+        </nav>
