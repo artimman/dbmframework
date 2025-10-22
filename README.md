@@ -1,4 +1,4 @@
-# DBMFramework
+# DBM Framework
 
 **Fast. Flexible. PSR-Compatible.**  
 **Modern PHP MVC/MVP Framework + CMS Engine**  
