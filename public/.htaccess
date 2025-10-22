@@ -1,0 +1,32 @@
+# Server Configuration File
+# This file is used to define server behavior and URL rewriting rules.
+
+<Files .htaccess>
+  Order allow,deny
+  Deny from all
+</Files>
+
+<IfModule mod_rewrite.c>
+  # Enable mod_rewrite module
+  RewriteEngine On
+
+  # Configure `RewriteBase` if automatic configuration fails.
+  # For domain installation (e.g., https://yourdomain.com) set: RewriteBase /
+  # For directory/localhost installations (e.g., "dbmframework" folder): RewriteBase /dbmframework/public/
+  # RewriteBase /
+
+  # Optional: Uncomment if needed.
+
+  # Some hosts may require you to use the `RewriteBase` directive.
+  # RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+  # RewriteRule ^(.*) - [E=BASE:%1]
+
+  # Redirect all traffic to HTTPS 
+  # RewriteCond %{HTTPS} off
+  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Redirect to index.php if no file or directory is found
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>

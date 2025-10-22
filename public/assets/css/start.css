@@ -1,0 +1,103 @@
+/* --- Start Stylesheets --- */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.dbm-box-welcome-header {
+    background-color: #e11d48;
+    color: #fff;
+}
+
+.dbm-box-welcome-header h1, .dbm-box-welcome-action h3 {
+    color: #fff;
+}
+
+.dbm-box-welcome-header .h-desc {
+    color: #cbd5e1;
+}
+
+.dbm-box-welcome-features {
+    background-color: #f9f9f9;
+}
+
+.dbm-box-welcome-action {
+    background: linear-gradient(to right, #ec4899, #8b5cf6, #4f46e5);
+}
+
+.dbm-btn-gradient {
+    background-image: linear-gradient(to right, #e11d48 0%, #be123c 51%, #e11d48 100%);
+}
+
+.dbm-btn-gradient {
+    margin: 10px;
+    padding: 15px 45px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;            
+    box-shadow: 0 0 20px #eee;
+    border-radius: 10px;
+}
+
+.dbm-btn-gradient:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+}
+
+.dbm-box-install {
+    margin: auto;
+    width: 100%;
+    max-width: 900px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+ul.dbm-list-language {
+    padding-top: 1px;
+    padding-bottom: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+    background-color: #e2e8f0;
+}
+
+ul.dbm-list-language li.active, ul.dbm-list-language li:active {
+    background-color: #e2e8f0;
+}
+
+ul.dbm-list-language a {
+    text-decoration: none;
+    color: #000;
+}
+
+ul.dbm-list-language li ul {
+    min-width: 80px;
+}
+
+.dbm-x-small {
+    font-size:.750em;
+}
+
+.list-group-item.active {
+    color: #000;
+    background-color: #e2e8f0;
+    border-color: #cbd5e1;
+}
+
+/*** Media queries ***/
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .dbm-box-welcome-header .h-desc {
+        text-indent: 5%;
+    }
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) {
+    .dbm-nav-max-width {
+        max-width: 60px;
+    }
+}

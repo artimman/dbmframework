@@ -1,0 +1,80 @@
+{% extends 'base_start.phtml' %}
+
+{% block content %}
+
+    <!-- Main Content -->
+    <main class="my-4 my-lg-5">
+        <div class="container">
+            {% include '_component/messages_dismissing.phtml' %}
+
+            <!-- Content -->
+            <div class="bg-white text-dark p-lg-2 rounded-lg shadow-lg">
+                <div class="p-4 rounded-top position-relative dbm-box-welcome-header">
+                    <div>
+                        <h1 class="display-5 fw-bold"><i class="bi bi-stars me-2"></i>Welcome to DbM Framework!</h1>
+                        <p class="fs-5 h-desc mb-0">Your lightweight and flexible framework for building powerful web applications.</p>
+                    </div>
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <!-- Language -->
+                    </div>
+                </div>
+                <div class="p-4 dbm-box-welcome-features">
+                    <div class="row g-2">
+                        <div class="col-lg-4">
+                            <h2 class="h4 fw-bold">⚡ High Performance</h2>
+                            <p class="mb-0">Experience unparalleled speed and responsiveness in your applications. Our optimized architecture ensures minimal latency and efficient resource management, allowing your web applications to handle high traffic loads with ease and stability.</p>
+                        </div>
+                        <div class="col-lg-4">
+                            <h2 class="h4 fw-bold">🔧 Easy Configuration</h2>
+                            <p class="mb-0">Get started quickly with our intuitive configuration options. Regardless of your experience, the framework provides user-friendly configuration and setup processes to match your project needs with minimal effort, reducing setup time and complexity.</p>
+                        </div>
+                        <div class="col-lg-4">
+                            <h2 class="h4 fw-bold">📚 Comprehensive Documentation</h2>
+                            <p class="mb-0">Our documentation includes best practices and step-by-step guides so you can easily create and deploy applications, ensuring smooth development and effective troubleshooting. With clear examples, you can optimize your work and overcome new challenges.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 text-white text-center rounded-bottom dbm-box-welcome-action">
+                    <div class="row g-2">
+                        <div class="col-lg-6">
+                            <h3 class="fw-bold">Start Building New Project</h3>
+                            <p>Go to the "src/Controller/IndexController.php" file and create the first page of your project in the index() method. If you won't be using the installer, go to the "application/routes.php" file and remove or comment out the "installer" route.</p>
+                            <p class="m-0">Check out the documentation to get started with DbM Framework.</p>
+                            <p class="mx-0 mt-1 mb-0"><a href="https://dbm.org.pl/tworzenie/dbmframework" class="btn btn-light fw-bold dbm-btn-gradient" target="_blank">Go to documentation</a></p>
+                            <p class="m-0 small">Documentation is being developed.</p>
+                        </div>
+                        <div class="col-lg-6">
+                            <hr class="d-lg-none">
+                            <h3 class="fw-bold">Install DbM CMS</h3>
+                            <p>Use a ready-made authentication system, admin panel, and content management system powered by DbM Framework to launch your website without writing any code. Continue with the DbM CMS installation.</p>
+                            <p class="m-0">Create websites, blogs, or portals - all customizable through an intuitive interface.</p>
+                            {% if ($this->isPath('installer')) : %}
+
+                            <p class="mx-0 mt-1 mb-0">
+                                <a href="{{ $this->path('installer') }}" class="btn btn-light fw-bold dbm-btn-gradient" onclick="this.querySelector('.spinner-border').classList.remove('d-none')">
+                                    <span class="spinner-border spinner-border-sm me-2 d-none" aria-hidden="true"></span> 
+                                    <span role="status">Run the Installer</span>
+                                </a>
+                            </p>
+                            {% elseif ($this->isPath('install')) : %}
+
+                            <p class="mx-0 mt-1 mb-0"><a href="{{ $this->path('install') }}" class="btn btn-light fw-bold dbm-btn-gradient">Install now</a></p>
+                            {% else : %}
+
+                            <div class="alert alert-info mt-3 mb-0 py-1">Content management system installation is unavailable! If the installation process has completed, you can remove the top installation bar by going to the &quot;header&quot; template - remove the line &quot;include start_navbar.phtml&quot;!</div>
+                            {% endif; %}
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="m-0 mt-3">If DbM Framework has made your work easier or you appreciate the quality of our code, <a href="https://shopping.dbm.org.pl/payments/order.3.html" class="link-light" target="_blank">please support the project financially</a>. Every donation is an investment in its future.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+{% endblock %}
