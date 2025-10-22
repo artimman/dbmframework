@@ -1,7 +1,7 @@
 # DBMFramework
 
-**Fast. Flexible. PSR-Compatible.**
-**Modern PHP MVC/MVP Framework + CMS Engine**
+**Fast. Flexible. PSR-Compatible.**  
+**Modern PHP MVC/MVP Framework + CMS Engine**  
 
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.1-blue)](http://php.net)
 [![PSR](https://img.shields.io/badge/PSR-1%2C%204%2C%2011%2C%2012-green)](https://www.php-fig.org/)
@@ -11,7 +11,7 @@
 [![Speed](https://img.shields.io/badge/performance-ultra%20fast-red)]()
 [![License](https://img.shields.io/badge/license-DbM-orange)](https://dbm.org.pl)
 
-DBM PHP MVC MVP Framework + DBM CMS, Version 4  
+DBM Framework + DBM CMS, Version 4  
 All copyrights reserved by Design by Malina (DbM)  
 Website: [www.dbm.org.pl](http://www.dbm.org.pl)  
 

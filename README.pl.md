@@ -11,7 +11,7 @@
 [![Speed](https://img.shields.io/badge/performance-ultra%20fast-red)]()
 [![License](https://img.shields.io/badge/license-DbM-orange)](https://dbm.org.pl)
 
-DBM Framework PHP MVC MVP + DBM CMS, Version 4  
+DBM Framework + DBM CMS, Version 4  
 Wszystkie prawa autorskie zastrzeżone przez Design by Malina (DbM)  
 Strona WWW: [www.dbm.org.pl](http://www.dbm.org.pl)  
 
