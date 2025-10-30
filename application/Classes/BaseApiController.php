@@ -13,12 +13,14 @@ declare(strict_types=1);
 
 namespace Dbm\Classes;
 
-use App\Exception\UnauthorizedApiException;
+use Dbm\Classes\DependencyContainer;
+use Dbm\Classes\Translation;
 use Dbm\Classes\Helpers\TranslationLoader;
 use Dbm\Classes\Http\Request;
 use Dbm\Classes\Http\Response;
 use Dbm\Classes\Http\Stream;
 use Dbm\Classes\Manager\SessionManager;
+use Dbm\Exception\UnauthorizedApiException;
 use Dbm\Interfaces\BaseApiInterface;
 use Dbm\Interfaces\DatabaseInterface;
 use Psr\Http\Message\ResponseInterface;

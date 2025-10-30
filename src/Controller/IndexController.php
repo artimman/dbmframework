@@ -24,6 +24,12 @@ class IndexController extends BaseController
 {
     private readonly InstallerService $installer;
 
+    /**
+     * Constructor
+     *
+     * @param IndexService $indexService
+     * @param DatabaseInterface|null $database [optional]
+     */
     public function __construct(
         IndexService $indexService,
         ?DatabaseInterface $database = null
@@ -34,10 +40,11 @@ class IndexController extends BaseController
     }
 
     /**
+     * Index page
+     * @routing GET '/' name: index
+     *
      * @param IndexService $indexService
      * @return ResponseInterface
-     *
-     * @Route: "/index"
      */
     public function index(IndexService $indexService): ResponseInterface
     {
@@ -50,10 +57,11 @@ class IndexController extends BaseController
     }
 
     /**
+     * Start page
+     * @routing GET '/start' name: start
+     *
      * @param IndexService $indexService
      * @return ResponseInterface
-     *
-     * @Route: "/start"
      */
     public function start(IndexService $indexService): ResponseInterface
     {
@@ -63,11 +71,12 @@ class IndexController extends BaseController
     }
 
     /**
+     * Installer page
+     * @routing GET '/installer' name: installer
+     *
      * @param IndexService $indexService
      * @param Request $request
      * @return ResponseInterface
-     *
-     * @Route: "/installer"
      */
     public function installer(IndexService $indexService, Request $request): ResponseInterface
     {
@@ -94,14 +103,12 @@ class IndexController extends BaseController
 
             $msg = $this->installer->installModule($dirModule, $pathManifest, $pathZip);
 
-            if (!empty($msg)) {
-                if ($msg['type'] === 'success') {
-                    $msg['message'] .= ' <a href="./install">Click here to continue &rsaquo;&rsaquo;</a>';
-                }
-
-                $alert = $indexService->alertMessage($msg);
-                $this->setFlash($alert['type'], $alert['message']);
+            if (!empty($msg) && ($msg['type'] === 'success')) {
+                $msg['message'] = 'Installation completed successfully. <a href="./install">Click here to continue &rsaquo;&rsaquo;</a>';
             }
+
+            $alert = $indexService->alertMessage($msg);
+            $this->setFlash($alert['type'], $alert['message']);
 
             return $this->redirect('./start');
         }

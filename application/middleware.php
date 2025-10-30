@@ -13,8 +13,8 @@
 
 declare(strict_types=1);
 
-use Dbm\Classes\Log\Logger;
 use Dbm\Classes\Router;
+use Dbm\Classes\Log\Logger;
 use Dbm\Middleware\ApiAuthMiddleware;
 use Dbm\Middleware\CorsMiddleware;
 use Dbm\Middleware\RequestLoggerMiddleware;

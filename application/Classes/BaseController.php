@@ -20,9 +20,9 @@ use Dbm\Classes\Http\Response;
 use Dbm\Classes\Manager\CookieManager;
 use Dbm\Classes\Manager\SessionManager;
 use Dbm\Classes\Services\RememberMeService;
-//use Dbm\Classes\TemplateEngine;
 use Dbm\Interfaces\BaseInterface;
 use Dbm\Interfaces\DatabaseInterface;
+use Dbm\Validation\Validator;
 use Dbm\Views\TemplateEngine;
 use Psr\Http\Message\ResponseInterface;
 
@@ -209,8 +209,28 @@ abstract class BaseController extends TemplateEngine implements BaseInterface
     }
 
     /**
-     * CSRF Token for forms, generowanie tokena CSRF z ograniczeniem czasu życia.
+     * Validates CSRF token by comparing the session token with the one sent in the request.
+     * INFO: Rozważ przeniesienie obsługi CSRF do dedykowanej usługi CsrfService.
+     *
+     * This method helps prevent Cross-Site Request Forgery (CSRF) attacks
+     * by verifying that the request originates from a valid user session.
+     *
+     * @param array $body The request body containing the CSRF token.
+     * @return bool True if the CSRF token is valid, false otherwise.
      */
+    protected function validateCsrfToken(array $body): bool
+    {
+        $sessionToken = $this->getSession('csrf_token');
+        $postedToken = $body['csrf_token'] ?? null;
+
+        return hash_equals($sessionToken ?? '', $postedToken ?? '');
+    }
+
+    /* *
+     * CSRF Token for forms, generowanie tokena CSRF z ograniczeniem czasu życia.
+     * TODO! Sprawdź, prawdopodobnie używane tylko w szablonach,
+     * więc można przenieść do TemplateFeature.php - może zmienić nazwę na getCsrfTokenForForm().
+     * /
     public function getCsrfToken(): string
     {
         // Pobierz istniejący token i czas jego utworzenia
@@ -225,5 +245,11 @@ abstract class BaseController extends TemplateEngine implements BaseInterface
         }
 
         return $csrfToken;
-    }
+    } */
+
+    /* TODO! Sprawdź Validator, czy nie lepiej przekazać $this->translation do konstruktora Validatora?
+    protected function getValidator(): Validator
+    {
+        return new Validator($this->translation);
+    } */
 }

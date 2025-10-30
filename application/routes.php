@@ -16,7 +16,7 @@ declare(strict_types=1);
 use App\Controller\IndexController;
 use Dbm\Classes\Router;
 
-//-INSTALL_POINT_ADD_US
+//-INSTALL_POINT_ADD_USE
 
 return function (Router $router): void {
     //-INSTALL_POINT_ADD_VALUES

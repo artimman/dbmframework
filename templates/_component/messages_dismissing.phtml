@@ -6,7 +6,7 @@
     
     <div class="alert alert-dismissible fade show {{ $classes['bg'] }}" role="alert">
         <strong class="font-bold me-2">{{ strtoupper(str_replace('message', '', $flashMessage['type'])) }}:</strong>
-        <span>{{ $flashMessage['message'] }}</span>
+        <span>{{{ $flashMessage['message'] }}}</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 {% endif; %}

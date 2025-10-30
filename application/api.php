@@ -14,15 +14,15 @@
 
 declare(strict_types=1);
 
-use App\Controller\Api\PanelBlogApiController;
+use App\Controller\Api\ExampleApiController;
 use Dbm\Classes\Router;
 
 return function (Router $router): void {
     $router->group('/api', function (Router $router) {
-        $router->get('/articles', [PanelBlogApiController::class, 'list'], 'api_articles_list');
-        $router->get('/articles/{id}', [PanelBlogApiController::class, 'get'], 'api_articles_get');
-        $router->post('/articles', [PanelBlogApiController::class, 'create'], 'api_articles_create');
-        $router->put('/articles/{id}', [PanelBlogApiController::class, 'update'], 'api_articles_update');
-        $router->delete('/articles/{id}', [PanelBlogApiController::class, 'delete'], 'api_articles_delete');
+        // $router->get('/example', [ExampleApiController::class, 'list'], 'api_example_list');
+        // $router->get('/example/{id}', [ExampleApiController::class, 'get'], 'api_example_get');
+        // $router->post('/example', [ExampleApiController::class, 'create'], 'api_example_create');
+        // $router->put('/example/{id}', [ExampleApiController::class, 'update'], 'api_example_update');
+        // $router->delete('/example/{id}', [ExampleApiController::class, 'delete'], 'api_example_delete');
     });
 };

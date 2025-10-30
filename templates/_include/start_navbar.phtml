@@ -6,12 +6,12 @@
                 </a>
                 <ul class="navbar-nav d-flex flex-row gap-3 flex-grow-1 justify-content-start">
                     <li class="nav-item">
-                        <a class="nav-link text-truncate dbm-nav-max-width{{ $this->isActive('index', 'active', '') }}" href="{{ $this->path() }}">Home -> Build a New Project</a>
+                        <a class="nav-link text-truncate dbm-nav-max-width{{ $this->isActive('index', 'active', '') }}" href="{{ $this->path() }}">Home (Build a New Project)</a>
                     </li>
                     {% if ($this->isPath('install')) : %}
 
                     <li class="nav-item">
-                        <a href="{{ $this->path('install') }}" class="nav-link text-truncate dbm-nav-max-width{{ $this->isActive('install', 'active', '') }}">Install -> DbM CMS</a>
+                        <a href="{{ $this->path('install') }}" class="nav-link text-truncate dbm-nav-max-width{{ $this->isActive('install', 'active', '') }}">Install (DbM CMS)</a>
                     </li>
                     {% endif %}
 
@@ -20,7 +20,7 @@
                     </li>
                 </ul>
                 <div class="ms-3">
-                    <a href="https://github.com/designbymalina/dbmframework" target="_blank" class="btn btn-outline-warning">Download</a>
+                    <a href="https://dbm.org.pl/tworzenie/dbmframework" target="_blank" class="btn btn-outline-warning">Download</a>
                 </div>
             </div>
         </nav>

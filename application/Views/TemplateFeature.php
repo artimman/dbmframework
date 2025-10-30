@@ -17,6 +17,7 @@ use App\Config\ConstantConfig;
 use Dbm\Classes\Helpers\LanguageHelper;
 use Dbm\Classes\Http\Request;
 use Dbm\Classes\Log\Logger;
+use Dbm\Classes\Manager\SessionManager;
 use Dbm\Classes\RouterSingleton;
 use Lib\Adverts\AdvertisementCache;
 use Lib\DataTables\Src\Classes\DataTableRenderer;
@@ -27,11 +28,13 @@ use Exception;
 class TemplateFeature
 {
     private Logger $logger;
+    private SessionManager $session;
     private ?DataTableRenderer $datatableRenderer = null;
 
     public function __construct()
     {
         $this->logger = new Logger();
+        $this->session = new SessionManager();
     }
 
     /**
@@ -144,60 +147,6 @@ class TemplateFeature
             : $content;
     }
 
-    /*
-     * Visit counter
-     */
-    public function counterVisits(): string
-    {
-        $result = '1';
-        $length = 16;
-
-        $file = 'counter_visits.txt';
-        $path = BASE_DIRECTORY . 'data' . DS . 'txt' . DS;
-        $pathFile = $path . $file;
-
-        if (!is_dir($path)) {
-            mkdir($path, 0755, true);
-        }
-
-        if (!file_exists($pathFile) || (filesize($pathFile) == 0)) {
-            file_put_contents($pathFile, $result);
-            $counterFile = 0;
-        } else {
-            $handle = fopen($pathFile, "r+");
-            $counterFile = fgets($handle, $length);
-            $result = strval($counterFile + 1);
-
-            fseek($handle, 0);
-            fwrite($handle, $result, $length);
-            fclose($handle);
-        }
-
-        $dirCopy = $path . 'copies' . DS;
-        $pathCopy = $dirCopy . $file;
-
-        if (!is_dir($dirCopy)) {
-            mkdir($dirCopy, 0755, true);
-        }
-
-        if (!file_exists($pathCopy) || (filesize($pathCopy) == 0)) {
-            file_put_contents($pathCopy, $result);
-            $counterCopy = 0;
-        } else {
-            $handle = fopen($pathCopy, "r");
-            $counterCopy = fread($handle, filesize($pathCopy));
-            fclose($handle);
-
-            if (intval($counterFile) >= intval($counterCopy)) {
-                copy($pathFile, $pathCopy);
-            } elseif (intval($counterFile) < intval($counterCopy)) {
-                copy($pathCopy, $pathFile);
-            }
-        }
-
-        return $result;
-    }
-
     /**
      * Get constants config.
      *
@@ -206,7 +155,7 @@ class TemplateFeature
      */
     public function constConfig($constant = null)
     {
-        $reflection = new ReflectionClass('App\Config\ConstantConfig');
+        $reflection = new ReflectionClass(ConstantConfig::class);
 
         if ($constant !== null) {
             if (is_array($constant) && !empty($constant[0]) && !empty($constant[1])) {
@@ -261,6 +210,79 @@ class TemplateFeature
 
         // Zbuduj pełny adres URL
         return $appUrl . $currentUri;
+    }
+
+    /**
+     * CSRF Token dla formularzy, generowanie tokena CSRF z ograniczeniem czasu życia.
+     */
+    public function getCsrfToken(): string
+    {
+        // Pobierz istniejący token i czas jego utworzenia
+        $csrfToken = $this->session->getSession('csrf_token');
+        $tokenTime = $this->session->getSession('csrf_token_time');
+
+        // Jeśli token jest pusty lub minęło więcej niż 15 minut, wygeneruj nowy
+        if (empty($csrfToken) || empty($tokenTime) || (time() - $tokenTime > 900)) {
+            $csrfToken = bin2hex(random_bytes(32));
+            $this->session->setSession('csrf_token', $csrfToken);
+            $this->session->setSession('csrf_token_time', time());
+        }
+
+        return $csrfToken;
+    }
+
+    /*
+     * Visit counter
+     */
+    public function counterVisits(): string
+    {
+        $result = '1';
+        $length = 16;
+
+        $file = 'counter_visits.txt';
+        $path = BASE_DIRECTORY . 'data' . DS . 'txt' . DS;
+        $pathFile = $path . $file;
+
+        if (!is_dir($path)) {
+            mkdir($path, 0755, true);
+        }
+
+        if (!file_exists($pathFile) || (filesize($pathFile) == 0)) {
+            file_put_contents($pathFile, $result);
+            $counterFile = 0;
+        } else {
+            $handle = fopen($pathFile, "r+");
+            $counterFile = fgets($handle, $length);
+            $result = strval($counterFile + 1);
+
+            fseek($handle, 0);
+            fwrite($handle, $result, $length);
+            fclose($handle);
+        }
+
+        $dirCopy = $path . 'copies' . DS;
+        $pathCopy = $dirCopy . $file;
+
+        if (!is_dir($dirCopy)) {
+            mkdir($dirCopy, 0755, true);
+        }
+
+        if (!file_exists($pathCopy) || (filesize($pathCopy) == 0)) {
+            file_put_contents($pathCopy, $result);
+            $counterCopy = 0;
+        } else {
+            $handle = fopen($pathCopy, "r");
+            $counterCopy = fread($handle, filesize($pathCopy));
+            fclose($handle);
+
+            if (intval($counterFile) >= intval($counterCopy)) {
+                copy($pathFile, $pathCopy);
+            } elseif (intval($counterFile) < intval($counterCopy)) {
+                copy($pathCopy, $pathFile);
+            }
+        }
+
+        return $result;
     }
 
     /**

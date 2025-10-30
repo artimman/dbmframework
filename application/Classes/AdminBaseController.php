@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Dbm\Classes;
 
 use App\Config\ConstantConfig;
-use App\Exception\UnauthorizedRedirectException;
+use Dbm\Exception\UnauthorizedRedirectException;
 use Dbm\Interfaces\DatabaseInterface;
 
 abstract class AdminBaseController extends BaseController
@@ -37,7 +37,7 @@ abstract class AdminBaseController extends BaseController
         }
 
         $userId = (int) $sessionKey;
-        if ($this->userPermissions($userId) !== ConstantConfig::USER_ROLES['A']) {
+        if ($this->userPermissions($userId) !== ConstantConfig::ARRAY_USER_ROLES['A']) {
             throw new UnauthorizedRedirectException('../');
         }
 

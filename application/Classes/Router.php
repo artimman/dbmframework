@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace Dbm\Classes;
 
-use App\Exception\UnauthorizedApiException;
-use App\Exception\UnauthorizedRedirectException;
 use Dbm\Classes\DependencyContainer;
 use Dbm\Classes\ExceptionHandler;
 use Dbm\Classes\Http\Request;
 use Dbm\Classes\Http\Response;
 use Dbm\Classes\Http\Stream;
 use Dbm\Classes\Log\Logger;
+use Dbm\Exception\UnauthorizedApiException;
+use Dbm\Exception\UnauthorizedRedirectException;
 use Dbm\Interfaces\DatabaseInterface;
 use Dbm\Interfaces\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
