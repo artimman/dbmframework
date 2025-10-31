@@ -43,6 +43,16 @@ interface ExtendedResponseInterface extends ResponseInterface
     /**
      * Creates a new HTML response.
      *
+     * @param string $content   Tekst.
+     * @param int    $statusCode Kod HTTP (domyślnie 200).
+     * @param array  $headers    Dodatkowe nagłówki.
+     * @return Response
+     */
+    public static function text(string $content, int $statusCode = 200, array $headers = []): Response;
+
+    /**
+     * Creates a new HTML response.
+     *
      * @param string $content   Treść HTML.
      * @param int    $statusCode Kod HTTP (domyślnie 200).
      * @param array  $headers    Dodatkowe nagłówki.

@@ -98,6 +98,13 @@ class Response extends Message implements ExtendedResponseInterface
     }
 
     /** {@inheritdoc} */
+    public static function text(string $content, int $statusCode = 200, array $headers = []): Response
+    {
+        $headers = array_merge(['Content-Type' => 'text/plain; charset=UTF-8'], $headers);
+        return new self($statusCode, $headers, new Stream($content));
+    }
+
+    /** {@inheritdoc} */
     public static function html(string $content, int $statusCode = 200, array $headers = []): Response
     {
         $headers = array_merge(['Content-Type' => 'text/html; charset=UTF-8'], $headers);
