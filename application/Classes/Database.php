@@ -177,26 +177,53 @@ class Database implements DatabaseInterface
         }
     }
 
+    /**
+     * Execute multiple SQL queries separated by semicolons.
+     * Works with PDO and supports multiline statements like CREATE TABLE or INSERT INTO.
+     *
+     * INFO: Nie używać do bardzo dużych dumpów (np. pełnych eksportów PhpMyAdmin), bo parser regexowy może się pomylić przy zagnieżdżonych danych binarnych.
+     * Przy importowaniu dużych dumpów warto rozważyć: mysqli::multi_query() zamiast PDO lub biblioteki jak phpmyadmin/sql-parser.
+     */
     public function multiQueryExecute(string $sql): bool
     {
         try {
+            // Start transaction for safety
             if (!$this->connect->inTransaction()) {
                 $this->connect->beginTransaction();
             }
 
-            $queries = array_filter(array_map('trim', explode(';', $sql)));
+            // Usuń komentarze i zbędne spacje
+            $sql = preg_replace('/^\s*--.*$/m', '', $sql); // usuń komentarze zaczynające się od --
+            $sql = preg_replace('/^\s*#.*/m', '', $sql); // usuń komentarze zaczynające się od #
+            $sql = trim($sql);
 
+            // Rozdziel polecenia — uwzględnia CREATE, INSERT, ALTER itp.
+            // Semikolon na końcu linii, ale tylko jeśli nie znajduje się wewnątrz stringa
+            $queries = preg_split(
+                '/;\s*(?=(?:--|INSERT|CREATE|UPDATE|DELETE|ALTER|DROP|TRUNCATE|$))/i',
+                $sql
+            );
+
+            // Wykonaj każde zapytanie z osobna
             foreach ($queries as $query) {
-                if (!empty($query)) {
-                    $this->connect->exec($query);
+                $query = trim($query);
+
+                // pomiń puste linie lub komentarze
+                if ($query === '' || str_starts_with($query, '--') || str_starts_with($query, '/*')) {
+                    continue;
                 }
+
+                // uruchom zapytanie
+                $this->connect->exec($query);
             }
 
+            // Zatwierdź transakcję
             if ($this->connect->inTransaction()) {
                 $this->connect->commit();
             }
 
             return true;
+
         } catch (PDOException $e) {
             if ($this->connect->inTransaction()) {
                 $this->connect->rollBack();
