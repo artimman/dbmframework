@@ -153,7 +153,7 @@ class Validator
         if (str_starts_with($rule, 'min:')) {
             $min = (int) substr($rule, 4);
             if (mb_strlen((string) $value) < $min) {
-                $this->registerError($field, $this->trans('validation.min', "Field {$field} must be at least {$min} characters.", ['field' => $fieldName]));
+                $this->registerError($field, $this->trans('validation.min', "Field {$field} must be at least {$min} characters.", ['field' => $fieldName, 'value' => $min]));
                 return;
             }
         }
@@ -161,7 +161,7 @@ class Validator
         if (str_starts_with($rule, 'max:')) {
             $max = (int) substr($rule, 4);
             if (mb_strlen((string) $value) > $max) {
-                $this->registerError($field, $this->trans('validation.max', "Field {$field} cannot exceed {$max} characters.", ['field' => $fieldName]));
+                $this->registerError($field, $this->trans('validation.max', "Field {$field} cannot exceed {$max} characters.", ['field' => $fieldName, 'value' => $max]));
                 return;
             }
         }

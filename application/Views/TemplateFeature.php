@@ -213,6 +213,13 @@ class TemplateFeature
         return $appUrl . $currentUri;
     }
 
+    /* INFO: Metoda wygodna w szablonach, ale wymaga class Request co może osłabiać wydajność.
+    public function getRequest(string $key, $default = null): mixed
+    {
+        $postValue = $this->request->getPost($key);
+        return $postValue !== null ? $postValue : $this->request->getQuery($key, $default);
+    } */
+
     /**
      * CSRF Token dla formularzy, generowanie tokena CSRF z ograniczeniem czasu życia.
      */
