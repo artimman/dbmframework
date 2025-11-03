@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Dbm\Classes;
 
+use App\Enum\RoleEnum;
 use Dbm\Classes\DependencyContainer;
 use Dbm\Classes\Translation;
 use Dbm\Classes\Helpers\TranslationLoader;
@@ -23,6 +24,7 @@ use Dbm\Classes\Manager\SessionManager;
 use Dbm\Exception\UnauthorizedApiException;
 use Dbm\Interfaces\BaseApiInterface;
 use Dbm\Interfaces\DatabaseInterface;
+use Dbm\Security\AccessControl;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class BaseApiController implements BaseApiInterface
@@ -32,6 +34,7 @@ abstract class BaseApiController implements BaseApiInterface
     protected ?Request $request = null;
     protected static ?DependencyContainer $diContainer = null;
     protected SessionManager $session;
+    protected AccessControl $access;
 
     public function __construct(?DatabaseInterface $database = null, ?Request $request = null)
     {
@@ -39,6 +42,7 @@ abstract class BaseApiController implements BaseApiInterface
         $this->request = $request ?? new Request();
         $this->translation = (new TranslationLoader())->load();
         $this->session = $session ?? new SessionManager();
+        $this->access = new AccessControl($this->database);
 
         if (self::$diContainer === null) {
             self::$diContainer = new DependencyContainer();
@@ -131,31 +135,26 @@ abstract class BaseApiController implements BaseApiInterface
         return new Response($status, $headers, $stream);
     }
 
-    protected function authorizeApiAccess(?string $role = null): void
+    /**
+     * Autoryzacja dostępu do API
+     *
+     * @param RoleEnum|null $requiredRole Wymagana rola użytkownika (opcjonalnie)
+     * @throws UnauthorizedApiException Gdy dostęp jest nieautoryzowany
+     */
+    protected function authorizeApiAccess(?RoleEnum $requiredRole = null): void
     {
         $sessionKey = $this->getSession(getenv('APP_SESSION_KEY'));
 
         if (empty($sessionKey)) {
-            throw new UnauthorizedApiException("Unauthorized API access!");
+            throw new UnauthorizedApiException('Unauthorized API access!');
         }
 
-        if (!empty($role)) {
+        if ($requiredRole !== null) {
             $userId = (int) $sessionKey;
-            $userRole = $this->userPermissions($userId);
 
-            if ($userRole !== $role) {
-                throw new UnauthorizedApiException("Unauthorized API access!");
+            if (!$this->access->userHasRole($userId, $requiredRole)) {
+                throw new UnauthorizedApiException('Unauthorized API access!');
             }
         }
-    }
-
-    private function userPermissions(int $userId): ?string
-    {
-        $query = "SELECT roles FROM dbm_user WHERE id = :id";
-
-        $this->database->queryExecute($query, ['id' => $userId]);
-        $result = $this->database->fetchObject() ?: null;
-
-        return $result->roles;
     }
 }

@@ -47,6 +47,8 @@ interface DatabaseInterface
 
     public function rollback(): void;
 
+    public function close(): void;
+
     public function buildInsertQuery(array $data, ?string $table = null): array;
 
     public function buildUpdateQuery(array $data, ?string $table = null, ?string $condition = null): array;

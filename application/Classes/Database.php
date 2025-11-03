@@ -23,7 +23,7 @@ use PDOStatement;
 
 class Database implements DatabaseInterface
 {
-    private PDO $connect;
+    private ?PDO $connect = null;
     private ?PDOStatement $statement;
     private logger $logger;
 
@@ -309,6 +309,12 @@ class Database implements DatabaseInterface
         }
     }
 
+    public function close(): void
+    {
+        $this->statement = null;
+        $this->connect = null;
+    }
+
     /**
      * Method for building an INSERT Query
      *
@@ -410,6 +416,16 @@ class Database implements DatabaseInterface
         } catch (Exception $e) {
             throw new ExceptionHandler("Błąd importu bazy danych z pliku: " . $e->getMessage(), 500, $e);
         }
+    }
+
+    /**
+     * Zamykanie połączenia (opcjonalne) - przydatne przy dużych aplikacjach, w cronach / workerach.
+     * Nie wymaga jawnego wywoływania, PHP wywoła destruktor przy końcu życia obiektu,
+     * ale dzięki temu nie martwisz się o wiszące połączenia, limity połączeń, itp.
+     */
+    public function __destruct()
+    {
+        $this->close();
     }
 
     // ---------------------------------------------------------

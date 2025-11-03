@@ -15,7 +15,7 @@ namespace Dbm\Classes;
 
 use Dbm\Interfaces\DatabaseInterface;
 
-class RouterSingleton
+final class RouterSingleton
 {
     private static ?Router $instance = null;
 

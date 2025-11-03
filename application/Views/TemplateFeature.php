@@ -30,6 +30,7 @@ class TemplateFeature
     private Logger $logger;
     private SessionManager $session;
     private ?DataTableRenderer $datatableRenderer = null;
+    private static array $enumCache = [];
 
     public function __construct()
     {
@@ -229,6 +230,31 @@ class TemplateFeature
         }
 
         return $csrfToken;
+    }
+
+    /**
+     * Get enum values.
+     * Template example: $userRoles = $this->getEnum('App\\Enum\\RoleEnum');
+     *
+     * @param string $enumClass
+     * @return array
+     */
+    public function getEnum(string $enumClass): array
+    {
+        if (isset(self::$enumCache[$enumClass])) {
+            return self::$enumCache[$enumClass];
+        }
+
+        if (!enum_exists($enumClass)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($enumClass::cases() as $case) {
+            $result[$case->name] = $case->value;
+        }
+
+        return self::$enumCache[$enumClass] = $result;
     }
 
     /*

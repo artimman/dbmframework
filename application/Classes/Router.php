@@ -23,6 +23,7 @@ use Dbm\Exception\UnauthorizedApiException;
 use Dbm\Exception\UnauthorizedRedirectException;
 use Dbm\Interfaces\DatabaseInterface;
 use Dbm\Interfaces\RouterInterface;
+use Dbm\Security\AccessGuard;
 use Psr\Http\Message\ResponseInterface;
 use Exception;
 use ReflectionMethod;
@@ -55,6 +56,7 @@ class Router implements RouterInterface
     private ?DependencyContainer $container;
     private Logger $logger;
     private Request $request;
+    private AccessGuard $guard;
 
     public function __construct(?DatabaseInterface $database = null, ?DependencyContainer $container = null, ?Request $request = null)
     {
@@ -62,6 +64,7 @@ class Router implements RouterInterface
         $this->database = $database;
         $this->logger = new Logger();
         $this->request = $request ?? new Request();
+        $this->guard = new AccessGuard($database);
     }
 
     public function dispatch(string $uri): void
@@ -110,6 +113,11 @@ class Router implements RouterInterface
 
             if (!method_exists($controllerName, $methodName)) {
                 throw new ExceptionHandler("Method not found: $methodName in $controllerName", 500);
+            }
+
+            // ACCESS CONTROL - Sprawdzenie uprawnień
+            if (isset($this->routes[$method][$route['uri']]['permission'])) {
+                $this->guard->checkPermission($this->routes[$method][$route['uri']]['permission']);
             }
 
             // Pobierz parametry metody za pomocą Reflection
@@ -216,6 +224,82 @@ class Router implements RouterInterface
     public function addMiddleware(callable $middleware, ?string $pathPrefix = null): void
     {
         $this->middlewares[] = ['handler' => $middleware, 'prefix' => $pathPrefix];
+    }
+
+    /* *
+     * Grupuje trasy i przypisuje wymagane uprawnienie tylko do tras dodanych w callback.
+     *
+     * @param string $permission Wymagane uprawnienie (np. "access_to_admin_panel")
+     * @param callable $callback Funkcja rejestrująca trasy (np. function() use ($router) { ... })
+     * /
+    public function guard(string $permission, callable $callback): void
+    {
+        // Zapamiętaj, jakie URI są już zarejestrowane (dla każdej metody)
+        $beforeUris = [];
+        foreach ($this->routes as $method => $routes) {
+            $beforeUris[$method] = array_keys($routes);
+        }
+
+        // Wykonaj callback, który doda nowe trasy
+        $callback();
+
+        // Przypisz permission tylko do nowych tras — iterujemy po referencji, aby modyfikacje trafiły do $this->routes
+        foreach ($this->routes as $method => &$routes) {
+            $existing = $beforeUris[$method] ?? [];
+            foreach ($routes as $uri => &$route) {
+                // jeśli trasa nie była wcześniej zarejestrowana -> ustaw permission
+                if (!in_array($uri, $existing, true)) {
+                    $route['permission'] = $permission;
+                }
+            }
+
+            unset($route);
+        }
+
+        unset($routes);
+    } */
+
+
+    /**
+     * Grupuje trasy z określonym wymaganym uprawnieniem.
+     *
+     * @param string $permission  Wymagane uprawnienie
+     * @param callable $callback  Funkcja rejestrująca trasy
+     * @param string|null $pathPrefix  Opcjonalny prefix ścieżek (np. '/admin')
+     */
+    public function guard(string $permission, callable $callback, ?string $pathPrefix = null): void
+    {
+        // Zapamiętaj, jakie URI są już zarejestrowane (dla każdej metody)
+        $beforeUris = [];
+        foreach ($this->routes as $method => $routes) {
+            $beforeUris[$method] = array_keys($routes);
+        }
+
+        // Opcjonalny prefix ścieżek
+        $previousPrefix = $this->groupPrefix;
+        if ($pathPrefix) {
+            $this->groupPrefix .= rtrim($pathPrefix, '/');
+        }
+
+        // Wykonaj callback, który doda nowe trasy
+        $callback();
+
+        // Przypisanie permission do nowych tras
+        foreach ($this->routes as $method => &$routes) {
+            $existing = $beforeUris[$method] ?? [];
+
+            foreach ($routes as $uri => &$route) {
+                if (!in_array($uri, $existing, true)) {
+                    $route['permission'] = $permission;
+                }
+            }
+
+            unset($route);
+        }
+
+        unset($routes);
+
+        $this->groupPrefix = $previousPrefix;
     }
 
     /**
