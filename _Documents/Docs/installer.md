@@ -71,6 +71,25 @@ System rozpoznaje dwie role:
 
 ---
 
+### Tłumaczenia (wielojęzyczność)
+
+Aplikacja posiada wbudowany system tłumaczeń, który możesz wykorzystywać do tworzenia interfejsu w wielu językach.  
+Aktualnie system nie zawiera natywnego systemu stron wielojęzycznych, jednak umożliwia dynamiczne przełączanie języka interfejsu i treści.
+
+Po instalacji w menu aplikacji pojawi się lista wyboru języka.  
+Dostępne języki są konfigurowane w pliku .env w zmiennej:
+
+```env
+APP_LANGUAGES="PL|EN|DE"
+```
+
+Pierwszy język w liście (PL) jest domyślny. Pozostawienie pola `APP_LANGUAGES` puste powoduje wyłączenie systemu tłumaczeń.
+
+Zmiana języka odbywa się przez dodanie parametru do adresu URL, np.: ?lang=PL lub ?lang=EN.  
+Aby wyczyścić sesję języka i powrócić do języka domyślnego, użyj: ?lang=OFF.
+
+---
+
 ### Pomoc i wsparcie
 
 Jeśli napotkasz problemy:
