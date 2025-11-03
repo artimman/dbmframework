@@ -11,7 +11,7 @@
 [![Speed](https://img.shields.io/badge/performance-ultra%20fast-red)]()
 [![License](https://img.shields.io/badge/license-DbM-orange)](https://dbm.org.pl)
 
-DBM Framework + DBM CMS, Version 4  
+DBM Framework PHP MVC MVP + DBM CMS, Version 4  
 Wszystkie prawa autorskie zastrzeżone przez Design by Malina (DbM)  
 Strona WWW: [www.dbm.org.pl](http://www.dbm.org.pl)  
 
@@ -182,7 +182,7 @@ Jeśli używasz CMS, zadbaj o prawa zapisu w data/, modules/.
 
 **WAŻNE!** Prosimy o zachowanie stopki: "Created with <a href="https://dbm.org.pl/" title="DbM">DbM Framework</a>". Link powinien pozostać nienaruszony. Dziękujemy za wsparcie rozwoju projektu! Zachowując link w stopce pomagasz rozwijać darmowy framework open source, wspierasz jego rozwój i społeczność niezależnych twórców PHP.
 
-#### DOKUMENTACJA:
+Dokumentacja:
 
 [Application Programming Interface (api.php)](_Documents/Docs/api.md)  
 [Command console (console.php)](_Documents/Docs/console.md)  
@@ -195,3 +195,7 @@ Jeśli używasz CMS, zadbaj o prawa zapisu w data/, modules/.
 [TemplateEngine](_Documents/Docs/template-engine.md)  
 [TemplateFeature](_Documents/Docs/template-feature.md)  
 [Templates](_Documents/Docs/templates.md)  
+
+--- DbM CMS ---  
+
+[Quick Start](_Documents/Docs/installer.md)  

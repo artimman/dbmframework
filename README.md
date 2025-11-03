@@ -1,7 +1,7 @@
-# DBM Framework
+# DBMFramework
 
-**Fast. Flexible. PSR-Compatible.**  
-**Modern PHP MVC/MVP Framework + CMS Engine**  
+**Fast. Flexible. PSR-Compatible.**
+**Modern PHP MVC/MVP Framework + CMS Engine**
 
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.1-blue)](http://php.net)
 [![PSR](https://img.shields.io/badge/PSR-1%2C%204%2C%2011%2C%2012-green)](https://www.php-fig.org/)
@@ -11,7 +11,7 @@
 [![Speed](https://img.shields.io/badge/performance-ultra%20fast-red)]()
 [![License](https://img.shields.io/badge/license-DbM-orange)](https://dbm.org.pl)
 
-DBM Framework + DBM CMS, Version 4  
+DBM PHP MVC MVP Framework + DBM CMS, Version 4  
 All copyrights reserved by Design by Malina (DbM)  
 Website: [www.dbm.org.pl](http://www.dbm.org.pl)  
 
@@ -140,17 +140,17 @@ The framework uses a built-in template engine by default. You can freely replace
 
 Why use DbM View Engine over the most popular engines:
 
-| Feature           | Twig    | Blade   | DbM View Engine             |
-| ----------------- | ------- | ------- | --------------------------- |
-| Speed             | average | good    | 🚀 fastest                  |
-| PHP-friendly      | ❌       | ⚠️      | ✅ developer in full control |
-| Filters           | yes     | yes     | ✅ simple and extensible     |
-| Plugins           | complex | none    | ✅ runtime callbacks         |
-| Block inheritance | yes     | yes     | ✅ + append/prepend support  |
-| Cache             | yes     | yes     | ✅ OPC class cache           |
-| Sandbox           | yes     | none    | ✅ optional                  |
-| Dependencies      | heavy   | medium  | ✅ none                      |
-| Size              | >400 KB | ~200 KB | ~50 KB                      |
+| Cechy | Twig | Blade | DbM View Engine |
+|-------|------|-------|---------------------|
+| Szybkość | średnia | dobra | 🚀 najwyższa |
+| PHP-friendly | ❌ | ⚠️ | ✅ programista wie co robi |
+| Filtry | tak | tak | ✅ proste i rozszerzalne|
+| Pluginy | trudne | brak | ✅ runtime callbacks |
+| Dziedziczenie bloków | tak | tak | ✅ + append/prepend |
+| Cache | tak | tak | ✅ klasy OPC |
+| Sandbox | tak | brak | ✅ opcjonalny |
+| Zależności | duże | średnie | ✅ niezależny |
+| Waga | >400KB | ~200KB | ~50KB |
 
 In tests with CACHE=TRUE, the results achieved were similar to those of Native PHP.
 
@@ -182,7 +182,7 @@ If you're using a CMS, ensure write permissions in data/ and modules/.
 
 **IMPORTANT!** Please retain the footer: "Created with <a href="https://dbm.org.pl/" title="DbM">DbM Framework</a>". The link should remain intact. Thank you for supporting the project! By maintaining the link in the footer, you help develop the free, open-source framework and support its development and the community of independent PHP developers.
 
-#### DOCUMENTATION:
+Documentation:
 
 [Application Programming Interface (api.php)](_Documents/Docs/api.md)  
 [Command console (console.php)](_Documents/Docs/console.md)  
@@ -195,3 +195,7 @@ If you're using a CMS, ensure write permissions in data/ and modules/.
 [TemplateEngine](_Documents/Docs/template-engine.md)  
 [TemplateFeature](_Documents/Docs/template-feature.md)  
 [Templates](_Documents/Docs/templates.md)  
+
+--- DbM CMS ---  
+
+[Quick Start](_Documents/Docs/installer.md)  
