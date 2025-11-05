@@ -21,9 +21,9 @@ class ExampleWorker
 {
     public function run(): void
     {
-        echo "Running ExampleWorker..." . PHP_EOL;
+        echo "Running \033[34mExampleWorker\033[0m...";
         sleep(1); // symulacja pracy
-        echo "ExampleWorker finished successfully." . PHP_EOL;
+        echo "\033[36m finished successfully\033[0m." . PHP_EOL;
     }
 } */
 
@@ -78,7 +78,7 @@ try {
 
     echo "----------" . PHP_EOL;
     echo "Worker finished at " . date('Y-m-d H:i:s') . PHP_EOL;
-    echo "    Duration: {$duration}s | Memory peak: {$memory} MB" . PHP_EOL;
+    echo "    Duration: \033[33m{$duration} s\033[0m | Memory peak: \033[33m{$memory} MB\033[0m" . PHP_EOL;
     echo "    Status: $status" . PHP_EOL;
     echo "==========" . PHP_EOL;
 }

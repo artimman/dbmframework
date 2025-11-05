@@ -226,40 +226,6 @@ class Router implements RouterInterface
         $this->middlewares[] = ['handler' => $middleware, 'prefix' => $pathPrefix];
     }
 
-    /* *
-     * Grupuje trasy i przypisuje wymagane uprawnienie tylko do tras dodanych w callback.
-     *
-     * @param string $permission Wymagane uprawnienie (np. "access_to_admin_panel")
-     * @param callable $callback Funkcja rejestrująca trasy (np. function() use ($router) { ... })
-     * /
-    public function guard(string $permission, callable $callback): void
-    {
-        // Zapamiętaj, jakie URI są już zarejestrowane (dla każdej metody)
-        $beforeUris = [];
-        foreach ($this->routes as $method => $routes) {
-            $beforeUris[$method] = array_keys($routes);
-        }
-
-        // Wykonaj callback, który doda nowe trasy
-        $callback();
-
-        // Przypisz permission tylko do nowych tras — iterujemy po referencji, aby modyfikacje trafiły do $this->routes
-        foreach ($this->routes as $method => &$routes) {
-            $existing = $beforeUris[$method] ?? [];
-            foreach ($routes as $uri => &$route) {
-                // jeśli trasa nie była wcześniej zarejestrowana -> ustaw permission
-                if (!in_array($uri, $existing, true)) {
-                    $route['permission'] = $permission;
-                }
-            }
-
-            unset($route);
-        }
-
-        unset($routes);
-    } */
-
-
     /**
      * Grupuje trasy z określonym wymaganym uprawnieniem.
      *
