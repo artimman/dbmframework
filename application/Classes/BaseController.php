@@ -22,7 +22,6 @@ use Dbm\Classes\Manager\SessionManager;
 use Dbm\Classes\Services\RememberMeService;
 use Dbm\Interfaces\BaseInterface;
 use Dbm\Interfaces\DatabaseInterface;
-use Dbm\Validation\Validator;
 use Dbm\Views\TemplateEngine;
 use Psr\Http\Message\ResponseInterface;
 
@@ -225,31 +224,4 @@ abstract class BaseController extends TemplateEngine implements BaseInterface
 
         return hash_equals($sessionToken ?? '', $postedToken ?? '');
     }
-
-    /* *
-     * CSRF Token for forms, generowanie tokena CSRF z ograniczeniem czasu życia.
-     * TODO! Sprawdź, prawdopodobnie używane tylko w szablonach,
-     * więc można przenieść do TemplateFeature.php - może zmienić nazwę na getCsrfTokenForForm().
-     * /
-    public function getCsrfToken(): string
-    {
-        // Pobierz istniejący token i czas jego utworzenia
-        $csrfToken = $this->getSession('csrf_token');
-        $tokenTime = $this->getSession('csrf_token_time');
-
-        // Jeśli token jest pusty lub minęło więcej niż 15 minut, wygeneruj nowy
-        if (empty($csrfToken) || empty($tokenTime) || (time() - $tokenTime > 900)) {
-            $csrfToken = bin2hex(random_bytes(32));
-            $this->setSession('csrf_token', $csrfToken);
-            $this->setSession('csrf_token_time', time());
-        }
-
-        return $csrfToken;
-    } */
-
-    /* TODO! Sprawdź Validator, czy nie lepiej przekazać $this->translation do konstruktora Validatora?
-    protected function getValidator(): Validator
-    {
-        return new Validator($this->translation);
-    } */
 }

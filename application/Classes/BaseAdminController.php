@@ -31,18 +31,30 @@ abstract class BaseAdminController extends BaseController
 
         if (empty(getenv('DB_NAME'))) {
             $this->setFlash('messageInfo', '[BaseAdmin] No connection to the database.');
-            throw new UnauthorizedRedirectException('./start');
+            throw new UnauthorizedRedirectException($this->getBaseUrl() . '/start');
         }
 
         $sessionKey = $this->getSession(getenv('APP_SESSION_KEY'));
         if (empty($sessionKey)) {
-            throw new UnauthorizedRedirectException('../login');
+            throw new UnauthorizedRedirectException($this->getBaseUrl() . '/login');
         }
 
         $userId = (int) $sessionKey;
 
         if (!$this->accessControl->userHasRole($userId, RoleEnum::ADMIN)) {
-            throw new UnauthorizedRedirectException('../');
+            throw new UnauthorizedRedirectException($this->getBaseUrl() . '/');
         }
+    }
+
+    protected function getBaseUrl(): string
+    {
+        $scriptName = dirname($this->request->getServerParams()['SCRIPT_NAME'] ?? $_SERVER['SCRIPT_NAME']);
+        $baseUrl = rtrim(str_replace('\\', '/', $scriptName), '/');
+
+        if (str_ends_with($baseUrl, '/public')) {
+            $baseUrl = substr($baseUrl, 0, -strlen('/public'));
+        }
+
+        return $baseUrl ?: rtrim(getenv('APP_URL'), '/');
     }
 }

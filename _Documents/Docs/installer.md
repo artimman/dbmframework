@@ -1,4 +1,4 @@
-# Instalator DbM CMS (path: `install`, file: `_Documents/install.zip`)
+E:\XAMPP\htdocs\__GIT\dbmframework_v4\src\Service\InstallService.php# Instalator DbM CMS (path: `install`, file: `_Documents/install.zip`)
 
 Witaj w instalatorze DbM CMS! Twoje lekkie i elastyczne środowisko do tworzenia nowoczesnych aplikacji internetowych.
 
@@ -87,6 +87,92 @@ Pierwszy język w liście (PL) jest domyślny. Pozostawienie pola `APP_LANGUAGES
 
 Zmiana języka odbywa się przez dodanie parametru do adresu URL, np.: ?lang=PL lub ?lang=EN.  
 Aby wyczyścić sesję języka i powrócić do języka domyślnego, użyj: ?lang=OFF.
+
+---
+
+### Struktura pliku module.json
+
+Każdy moduł wymaga pliku `module.json` w katalogu głównym modułu, który definiuje strukturę instalacji modułu. Plik ten zawiera informacje o plikach źródłowych oraz miejscach docelowych, do których mają zostać skopiowane podczas instalacji.
+
+#### Struktura pliku
+
+```json
+{
+    "name": "Module Name",
+    "version": "1.0.0",
+    "description": "Module description",
+    "files": {
+        "key1": "path/to/source/file",
+        "key2": "path/to/source/directory"
+    },
+    "target": {
+        "key1": "target/path/to/file",
+        "key2": "target/path/to/directory"
+    }
+}
+```
+
+#### Pola w module.json
+
+- **`name`** - Nazwa modułu wyświetlana w systemie
+- **`version`** - Wersja modułu (np. "1.0.0")
+- **`description`** - Krótki opis funkcjonalności modułu
+- **`files`** - Obiekt zawierający mapowanie kluczy na ścieżki źródłowe plików/katalogów modułu (względem katalogu głównego projektu)
+- **`target`** - Obiekt zawierający mapowanie kluczy na ścieżki docelowe, gdzie pliki/katalogi mają zostać skopiowane (względem katalogu głównego projektu)
+
+```
+
+#### Ważne informacje dotyczące ścieżek
+
+**Ścieżki dla instalatora:**
+
+W sekcji `target` wystarczy podać względne ścieżki docelowe. Instalator skopiuje całą zawartość wskazanego katalogu, np.:
+- `"translations": "translations"` - kopiuje całą zawartość katalogu `translations/` z modułu do `translations/` w projekcie
+- `"templates": "templates"` - kopiuje całą zawartość katalogu `templates/` z modułu do `templates/` w projekcie
+
+**Ścieżki dla BackupBaseFiles:**
+
+Jeśli chcesz, aby pliki były automatycznie kopiowane do `BackupBaseFiles` przed instalacją (co umożliwia ich przywrócenie podczas dezinstalacji), musisz użyć **dokładnych ścieżek do katalogów** zarówno w sekcji `files`, jak i `target`.
+
+System automatycznie tworzy kopie zapasowe tylko dla plików i katalogów, których ścieżki w sekcji `files` zawierają `/src/` lub `/templates/` w swojej ścieżce.
+
+**Różnica między instalatorem a BackupBaseFiles:**
+
+- **Dla instalatora** wystarczy ogólna ścieżka: `"templates": "templates"` - skopiuje cały katalog
+- **Dla BackupBaseFiles** potrzebna jest dokładna ścieżka do konkretnego podkatalogu: `"tplInclude": "templates/_include"`, `"tplIndex": "templates/index"`
+
+**Przykład:**
+
+```json
+{
+    "files": {
+        "installController": "_Documents/install/src/Controller/InstallController.php",
+        "tplComponent": "_Documents/install/templates/_component",
+        "tplInclude": "_Documents/install/templates/_include",
+        "tplIndex": "_Documents/install/templates/index",
+        "translations": "_Documents/install/translations"
+    },
+    "target": {
+        "installController": "src/Controller/InstallController.php",
+        "tplComponent": "templates/_component",
+        "tplInclude": "templates/_include",
+        "tplIndex": "templates/index",
+        "translations": "translations"
+    }
+}
+```
+
+W powyższym przykładzie:
+- **Instalator** skopiuje:
+  - Wszystkie pliki z `_Documents/install/templates/` do `templates/` (ze wszystkich podkatalogów)
+  - Wszystkie pliki z `_Documents/install/translations/` do `translations/`
+- **BackupBaseFiles** utworzy kopie zapasowe tylko dla:
+  - `installController` (zawiera `/src/` w ścieżce źródłowej)
+  - `tplComponent`, `tplInclude`, `tplIndex` (zawierają `/templates/` w ścieżce źródłowej)
+  - `templates` **nie** zostanie skopiowane do BackupBaseFiles (mimo że zawiera `/templates/`, ponieważ jest to ogólna ścieżka - system wymaga dokładnych ścieżek do podkatalogów)
+  - `translations` **nie** zostanie skopiowane do BackupBaseFiles (nie zawiera `/src/` ani `/templates/`)
+
+**Uwaga:** Klucze w sekcjach `files` i `target` muszą być identyczne - każdy klucz w `target` musi mieć odpowiadający mu klucz w `files`. Jeśli chcesz, aby pliki były kopiowane do BackupBaseFiles, użyj dokładnych ścieżek do konkretnych katalogów w obu sekcjach (np. `"tplInclude": "templates/_include"` zamiast tylko `"templates": "templates"`).
 
 ---
 

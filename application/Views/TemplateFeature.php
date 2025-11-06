@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Dbm\Views;
 
 use App\Config\ConstantConfig;
+use Dbm\Classes\Helpers\EnumHelper;
 use Dbm\Classes\Helpers\LanguageHelper;
 use Dbm\Classes\Http\Request;
 use Dbm\Classes\Log\Logger;
@@ -29,13 +30,14 @@ class TemplateFeature
 {
     private Logger $logger;
     private SessionManager $session;
+    private EnumHelper $enumHelper;
     private ?DataTableRenderer $datatableRenderer = null;
-    private static array $enumCache = [];
 
     public function __construct()
     {
         $this->logger = new Logger();
         $this->session = new SessionManager();
+        $this->enumHelper = new EnumHelper($this->logger);
     }
 
     /**
@@ -240,28 +242,15 @@ class TemplateFeature
     }
 
     /**
-     * Get enum values.
-     * Template example: $userRoles = $this->getEnum('App\\Enum\\RoleEnum');
+     * Get single enum value by name.
+     * Template example: $adminRole = $enumHelper->getEnumValue('App\\Enum\\RoleEnum', 'ADMIN');
      *
      * @param string $enumClass
-     * @return array
+     * @param string $caseName
      */
-    public function getEnum(string $enumClass): array
+    public function getEnumValue(string $enumClass, string $caseName): mixed
     {
-        if (isset(self::$enumCache[$enumClass])) {
-            return self::$enumCache[$enumClass];
-        }
-
-        if (!enum_exists($enumClass)) {
-            return [];
-        }
-
-        $result = [];
-        foreach ($enumClass::cases() as $case) {
-            $result[$case->name] = $case->value;
-        }
-
-        return self::$enumCache[$enumClass] = $result;
+        return $this->enumHelper->getEnumValue($enumClass, $caseName);
     }
 
     /*
