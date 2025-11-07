@@ -7,6 +7,9 @@
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
  * @link https://www.dbm.org.pl
+ *
+ * INFO! W klasie jest SQL, czy przenieść klasę z namespace Lib/ do App/ ?
+ * Generalnie bibliotekę można pozostawić bez zmian i skonfigurować w warstwie projektu 'App'.
  */
 
 declare(strict_types=1);
@@ -41,7 +44,7 @@ class UserSearchProvider implements SearchProviderInterface
 
     public function searchQuery(string $query, array $filters = []): array
     {
-        $sql = "SELECT id, login, email, roles, created 
+        $sql = "SELECT id, login, email, roles, created_at 
                 FROM dbm_user
                 WHERE (login LIKE :q OR email LIKE :q)";
         $params = ['q' => "%$query%"];

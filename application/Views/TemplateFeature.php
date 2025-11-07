@@ -19,6 +19,7 @@ use Dbm\Classes\Helpers\LanguageHelper;
 use Dbm\Classes\Http\Request;
 use Dbm\Classes\Log\Logger;
 use Dbm\Classes\Manager\SessionManager;
+use Dbm\Classes\Router;
 use Dbm\Classes\RouterSingleton;
 use Lib\Adverts\AdvertisementCache;
 use Lib\DataTables\Src\Classes\DataTableRenderer;
@@ -32,6 +33,7 @@ class TemplateFeature
     private SessionManager $session;
     private EnumHelper $enumHelper;
     private ?DataTableRenderer $datatableRenderer = null;
+    private ?string $currentRouteCache = null;
 
     public function __construct()
     {
@@ -215,13 +217,6 @@ class TemplateFeature
         return $appUrl . $currentUri;
     }
 
-    /* INFO: Metoda wygodna w szablonach, ale wymaga class Request co może osłabiać wydajność.
-    public function getRequest(string $key, $default = null): mixed
-    {
-        $postValue = $this->request->getPost($key);
-        return $postValue !== null ? $postValue : $this->request->getQuery($key, $default);
-    } */
-
     /**
      * CSRF Token dla formularzy, generowanie tokena CSRF z ograniczeniem czasu życia.
      */
@@ -239,6 +234,29 @@ class TemplateFeature
         }
 
         return $csrfToken;
+    }
+
+    /**
+     * Zwraca parametr z GET lub POST (POST ma priorytet).
+     * Dane są automatycznie konwertowane do stringa i oczyszczane z niebezpiecznych znaków.
+     * Nie używa klasy Request - brak narzutu wydajnościowego.
+     */
+    public function getRequestValue(string $key, mixed $default = null, bool $escape = true): mixed
+    {
+        $value = $_POST[$key] ?? $_GET[$key] ?? $default;
+
+        if (is_array($value) || is_object($value)) {
+            return $default;
+        }
+
+        $value = trim((string) $value);
+        $value = filter_var($value, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
+
+        if ($escape) {
+            return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        }
+
+        return $value;
     }
 
     /**
@@ -308,50 +326,18 @@ class TemplateFeature
     }
 
     /**
-     * Rozpoznaje aktywny link w nawigacji dla wybranej strony
+     * Rozpoznaje aktywny link w nawigacji i rozwija menu dla wybranej strony
      */
-    public function isActive(string $link, string $class = 'dbm-active', ?string $active = 'linkActive'): string
+    public function isActive(string|array $routeNames, string $classActive = 'active', ?string $menuActive = 'linkActive'): string
     {
-        // Pobierz instancję routera
-        $router = RouterSingleton::getInstance();
+        // Cache! Przy wielokrotnym wywołaniu isActive(), aby nie wywoływać statycznej metody kilka razy:
+        $current = $this->currentRouteCache ??= Router::getCurrentRouteName();
 
-        // Pobierz listę tras z routera
-        $arrayRoutes = $router->getRoutes();
+        $isActive = is_array($routeNames)
+            ? in_array($current, $routeNames, true)
+            : $current === $routeNames;
 
-        // Pobierz bieżący URI bez parametrów i fragmentów
-        $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-        // Usuń skrypt (index.php) z URI i przygotuj bazową ścieżkę
-        $baseUri = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-        $dirPublic = 'public';
-
-        // Usuń bazową ścieżkę z URI, jeśli zawiera katalog 'public'
-        if (strpos($baseUri, $dirPublic) !== false) {
-            $basePath = strstr($baseUri, $dirPublic, true);
-            $currentUri = '/' . ltrim(str_replace($basePath, '', $currentUri), '/');
-        }
-
-        // Normalizacja URI dla aplikacji w katalogu głównym
-        $currentUri = '/' . ltrim($currentUri, '/');
-
-        // Znajdź bieżącą trasę na podstawie URI
-        $matchedRouteName = null;
-
-        foreach ($arrayRoutes as $routePattern => $routeData) {
-            // Zamień dynamiczne parametry w trasach na wyrażenia regularne
-            $regexPattern = preg_replace('/\{[a-zA-Z_]+\}/', '[^/]+', $routePattern);
-            $regexPattern = str_replace('.', '\.', $regexPattern);
-            $regexPattern = '#^' . $regexPattern . '$#';
-
-            // Dopasuj bieżące URI do wzorca
-            if (preg_match($regexPattern, $currentUri)) {
-                $matchedRouteName = $routeData['name'] ?? null;
-                break;
-            }
-        }
-
-        // Porównaj nazwę dopasowanej trasy z podanym linkiem
-        return $matchedRouteName === $link ? rtrim(" {$class} {$active}") : '';
+        return $isActive ? trim(" {$classActive} {$menuActive}") : '';
     }
 
     /**
@@ -383,25 +369,6 @@ class TemplateFeature
         }
 
         return false;
-    }
-
-    /**
-     * Metoda pomocnicza dla isActive() do wyciągania parametru z aktualnego URL
-     */
-    public function extractParameter()
-    {
-        // Pobranie bieżącej ścieżki URI
-        $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-        // Wyrażenie regularne do dopasowania liczby na końcu URL
-        $pattern = '/(\d+)(?:\.html)?$/';
-
-        // Sprawdź, czy jest dopasowanie
-        if (preg_match($pattern, $currentUri, $matches)) {
-            return $matches[1]; // Zwracamy dopasowaną liczbę
-        }
-
-        return null;
     }
 
     /**

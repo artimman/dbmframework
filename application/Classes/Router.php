@@ -49,6 +49,7 @@ class Router implements RouterInterface
 {
     protected array $routes = [];
     protected array $namedRoutes = [];
+    protected static ?string $currentRouteName = null;
     /** @var array<int, array{handler: callable, prefix: string|null}> */
     protected array $middlewares = [];
     private string $groupPrefix = '';
@@ -77,6 +78,11 @@ class Router implements RouterInterface
             if (!$route) {
                 throw new ExceptionHandler("Route not found for {$method} {$uri}", 404);
             }
+
+            // Zapamiętaj nazwę bieżącej trasy (dla helperów typu isActive w TemplateFeature)
+            $routeName = $this->routes[$method][$route['uri']]['name'] ?? null;
+            self::$currentRouteName = $routeName;
+            // Opcjonalnie: $_ENV['CURRENT_ROUTE_NAME'] = $routeName;
 
             if (!isset($this->routes[$method][$route['uri']])) {
                 if ($route['uri'] === '/public') { // TODO! Sprawdź na serwerze zdalnym, dodane dla localhost?
@@ -331,6 +337,14 @@ class Router implements RouterInterface
         $text = trim(preg_replace('~\s+~', $hyphen, $text));
 
         return $text;
+    }
+
+    /**
+     * Używane w TemplateFeature {} -> isActive()
+     */
+    public static function getCurrentRouteName(): ?string
+    {
+        return self::$currentRouteName;
     }
 
     /**
