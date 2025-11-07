@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Dbm\Exception;
 
+use Dbm\Classes\Http\Request;
 use Dbm\Classes\Log\Logger;
+use Dbm\Classes\Manager\SessionManager;
 use Exception;
 
 class UnauthorizedRedirectException extends Exception
@@ -15,6 +17,8 @@ class UnauthorizedRedirectException extends Exception
     private int $limit = 10; // max redirects
     private int $windowSeconds = 600; // 10 min
     private Logger $logger;
+    private Request $request;
+    private SessionManager $session;
 
     public function __construct(string $redirectUrl, $code = 401, ?Exception $previous = null)
     {
@@ -29,6 +33,8 @@ class UnauthorizedRedirectException extends Exception
         }
 
         $this->logger = new Logger();
+        $this->request = new Request();
+        $this->session = new SessionManager();
         $this->logRedirectAttempt();
     }
 
@@ -39,22 +45,30 @@ class UnauthorizedRedirectException extends Exception
 
     private function logRedirectAttempt(): void
     {
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $ip = $this->request->getClientIp() ?? 'unknown';
         $now = time();
+
+        $arrayServerParams = $this->request->getServerParams();
+        $from = $arrayServerParams['HTTP_REFERER'] ?? ($arrayServerParams['REQUEST_URI'] ?? 'unknown');
+
+        $sessionUserId = $this->session->getSession(getenv('APP_SESSION_KEY')) ?? '';
 
         $logs = $this->loadLogs();
         $logs = array_filter($logs, fn ($entry) => $entry['timestamp'] > ($now - $this->windowSeconds));
 
-        $logs[] = ['ip' => $ip, 'timestamp' => $now];
+        $logs[] = ['ip' => $ip, 'timestamp' => $now, 'from' => $from];
         $this->saveLogs($logs);
 
         $count = count(array_filter($logs, fn ($entry) => $entry['ip'] === $ip));
 
         if ($count > $this->limit) {
-            $this->logger->alert("Too many unauthorized redirects from IP: $ip");
+            $this->logger->alert("Too many unauthorized redirects from IP: $ip (last from: $from)");
             $this->addToBlacklist($ip);
         } else {
-            $this->logger->alert("Unauthorized redirect for IP $ip to {$this->redirectUrl}. Check it out!");
+            $user = $sessionUserId ? "User ID: $sessionUserId" : "Guest";
+            $this->logger->alert(
+                "Unauthorized redirect for IP: $ip - $user, from $from to {$this->redirectUrl}. Check it out!"
+            );
         }
     }
 
