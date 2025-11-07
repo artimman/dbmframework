@@ -243,8 +243,30 @@ class InstallerService
 
         $newRouteLines = [];
         foreach (explode("\n", trim($installRoutes)) as $line) {
-            $line = trim($line);
-            if ($line !== '' && !str_contains($content, $line)) {
+            $line = rtrim($line);
+            $trimmedLine = trim($line);
+
+            if ($trimmedLine === '') {
+                continue;
+            }
+
+            // Always include structural closers like '});' or '}' regardless of deduplication
+            if ($trimmedLine === '});' || $trimmedLine === '}' || $trimmedLine === ');') {
+                $newRouteLines[] = $line;
+                continue;
+            }
+
+            // Deduplicate only meaningful router lines; allow comments and opening guards if unique
+            $isRouterLine = preg_match('/^\s*\$router->/', $line) === 1;
+            if ($isRouterLine) {
+                if (!str_contains($content, $trimmedLine)) {
+                    $newRouteLines[] = $line;
+                }
+                continue;
+            }
+
+            // For other non-empty lines (comments, variables, etc.), add if not present
+            if (!str_contains($content, $trimmedLine)) {
                 $newRouteLines[] = $line;
             }
         }
@@ -261,8 +283,8 @@ class InstallerService
 
         if (!empty($newUseLines)) {
             $content = preg_replace(
-                '/(\/\/\-INSTALL_POINT_ADD_USE)/',
-                implode("\n", $newUseLines) . "\n$1",
+                "/\n{0,2}(\/\/\-INSTALL_POINT_ADD_USE)/",
+                "\n" . implode("\n", $newUseLines) . "\n\n$1",
                 $content
             );
             $modified = true;
@@ -271,7 +293,7 @@ class InstallerService
         if (!empty($newRouteLines)) {
             $content = preg_replace(
                 '/(\/\/\-INSTALL_POINT_ADD_ROUTES)/',
-                implode("\n    ", $newRouteLines) . "\n    $1",
+                rtrim(implode("\n", $newRouteLines)) . "\n\n    $1",
                 $content
             );
             $modified = true;
@@ -280,7 +302,7 @@ class InstallerService
         if (!empty($newValueLines)) {
             $content = preg_replace(
                 '/(\/\/\-INSTALL_POINT_ADD_VALUES)/',
-                implode("\n    ", $newValueLines) . "\n    $1",
+                implode("\n", $newValueLines) . "\n\n    $1",
                 $content
             );
             $modified = true;

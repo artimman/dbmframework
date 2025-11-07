@@ -345,30 +345,21 @@ class TemplateFeature
      */
     public function isPath(string $target): bool
     {
-        $router = RouterSingleton::getInstance();
+        try {
+            $router = RouterSingleton::getInstance();
 
-        if (!method_exists($router, 'getRoutes')) {
-            return false;
-        }
-
-        $routes = $router->getRoutes();
-        if (!is_iterable($routes)) {
-            return false;
-        }
-
-        foreach ($routes as $route) {
-            if (!is_iterable($route)) {
-                continue;
+            if (!method_exists($router, 'getRoutes')) {
+                return false;
             }
 
-            foreach ($route as $param) {
-                if (($param['name'] ?? null) === $target) {
-                    return true;
-                }
-            }
-        }
+            $namedRoutes = (new \ReflectionClass($router))
+                ->getProperty('namedRoutes')
+                ->getValue($router);
 
-        return false;
+            return isset($namedRoutes[$target]);
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     /**
