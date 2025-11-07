@@ -61,8 +61,7 @@ class RequestLoggerMiddleware
                 'ip' => $ip,
                 'role' => $userRole,
                 'time' => $duration,
-            ],
-            'requests'
+            ]
         );
 
         return null;

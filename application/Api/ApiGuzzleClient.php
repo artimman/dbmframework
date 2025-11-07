@@ -62,8 +62,7 @@ class ApiGuzzleClient implements ApiClientInterface
                     'endpoint' => $endpoint,
                     'status' => $response->getStatusCode(),
                     'time' => $duration
-                ],
-                'requests_api'
+                ]
             );
 
             return ApiResponse::fromGuzzle($response);

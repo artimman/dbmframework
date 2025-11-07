@@ -89,7 +89,7 @@ class Przelewy24Client
         ], $params);
 
         $data['sign'] = $this->buildSign($data);
-        $this->logger->info('Verifying transaction', $data, 'p24');
+        $this->logger->info('Verifying transaction', $data);
 
         return $this->client->put('transaction/verify', ['json' => $data]);
     }
