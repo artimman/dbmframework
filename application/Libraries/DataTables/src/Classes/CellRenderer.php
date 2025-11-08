@@ -166,8 +166,9 @@ class CellRenderer
         $field = $field ?? 'image';
         $src = htmlspecialchars($record[$field] ?? '');
 
+        $noimage = $options['noimage'] ?? 'placeholder.png';
         $srcDir = rtrim($options['src_dir'] ?? '', '/') . '/';
-        $fullSrc = $src ? $srcDir . $src : $srcDir . 'placeholder.png';
+        $fullSrc = $src ? $srcDir . $src : $srcDir . $noimage;
 
         $altField = $options['alt_field'] ?? null;
         $alt = $src

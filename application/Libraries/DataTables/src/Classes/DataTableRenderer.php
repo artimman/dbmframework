@@ -48,9 +48,9 @@ class DataTableRenderer
         $url = $config::getUrl($url);
 
         // --- FREE version restriction
-        /* if ($mode !== 'PHP') {
+        if ($mode !== 'PHP') {
             return $this->renderAvailableInPRO($mode);
-        } */
+        }
 
         $schema  = $config->getTableConfig();
         $filters = $config->getFilters();
