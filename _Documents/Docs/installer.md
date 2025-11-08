@@ -1,4 +1,4 @@
-E:\XAMPP\htdocs\__GIT\dbmframework_v4\src\Service\InstallService.php# Instalator DbM CMS (path: `install`, file: `_Documents/install.zip`)
+# Instalator DbM CMS
 
 Witaj w instalatorze DbM CMS! Twoje lekkie i elastyczne środowisko do tworzenia nowoczesnych aplikacji internetowych.
 
